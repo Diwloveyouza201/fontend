@@ -102,7 +102,7 @@
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">รายการ คิวอาร์โค้ด ของฉัน</h6>
-                <a class="collapse-item" href="QR_Code_All.php">คิวอาร์โค้ด กิจกรรมทั้งหมด</a>
+                <a class="collapse-item" href="QR_Code_All2.php">คิวอาร์โค้ด กิจกรรมทั้งหมด</a>
                 <a class="collapse-item" href="QR_Code_Join.php">กิจกรรมที่เข้าร่วม</a>
                 <a class="collapse-item" href="QR_Code_Not_Join.php">กิจกรรมที่ยังไม่เข้าร่วม </a>
                 
@@ -193,7 +193,7 @@
             </button>
 
             <!-- Topbar Search -->
-            <form
+            <!-- <form
                 class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                 <div class="input-group">
                     <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -204,7 +204,7 @@
                         </button>
                     </div>
                 </div>
-            </form>
+            </form> -->
 
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
@@ -306,6 +306,8 @@
                     <?php 
                     $i = 0;
                     $n = 0;
+                    $m = 0;
+                    $w = 0;
                     while($i<count($getUser)): ?>   
                      <?php if($getUser[$i]['adminuser'] == 1&$getUser[$i]['userstatus'] == 1){ ?>
                         <?php $n++?>
@@ -314,19 +316,38 @@
                                             <td><?php echo $n ?></td>
                                                 <td><?php echo $getUser[$i]['name'];?></td>
                                                 <td><?php echo $getUser[$i]['nickname'];?></td>
-                                                <td><?php echo $getUser[$i]['gender'];?></td>
+                                                <td><?php if($getUser[$i]['gender']=="G01"){echo "ชาย"; $m++;}else{echo "หญิง";$w++;} ?></td>
                                                 <td><?php echo $getUser[$i]['age'];?></td>
                                                 <td><?php echo $getUser[$i]['phone'];?></td>
                                                 <td><?php echo $getUser[$i]['lineid'];?></td>
                                                 <td><?php echo $getUser[$i]['email'];?>
-                                                <td><a class="btn btn-outline-success" data-target="#Add_Register" href="ChackData.php?user_ID=<?php echo $getUser[$i]['user_ID'] ?>&Status=EditUser">ลบข้อมูลผู้ใช้</a></td>
-                                            </tr>
+                                                <td><a class="btn btn-outline-success" href="#" data-toggle="modal" data-target="#deletuser">ลบข้อมูลผู้ใช้</a></td>
+                                                <!-- <td><a class="btn btn-outline-success" data-target="#Add_Register" href="ChackData.php?user_ID=<?php
+                                                //  echo $getUser[$i]['user_ID'] 
+                                                 ?>&Status=EditUser">ลบข้อมูลผู้ใช้</a></td> -->
+                                            </tr> <div class="modal fade" id="deletuser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" align="center">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">ลบข้อมูลผู้ใช้</h5>
+                                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">คุณต้องการลบผู้ใช้นี้หรือไม่</div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">ยกเลิก</button>
+                                                                <a class="btn btn-outline-success" href="ChackData.php?user_ID=<?php echo $getUser[$i]['user_ID'] ?>&Status=EditUser">ยืนยัน</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                     </tbody>
                                     <?php } ?>
 
                                     <?php $i++ ?>
                                     <?php endwhile ?> 
-                                    <?php echo "ผู้ใช้ทั้งหมด ".$n." คน" ?>
+                                    <?php echo "ผู้ใช้ทั้งหมด ".$n." คน  ผู้ชาย ".$m." คน  ผู้หญิง ".$w." คน" ?>
                                 <!-- </form>                 -->
                                 </table>
                             </div>

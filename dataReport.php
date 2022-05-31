@@ -19,6 +19,9 @@
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <?php
     require_once './dbconnect.php';
+    if(!isset($_SESSION['chacklogin']) && empty($_SESSION['chacklogin'])) {
+        Header("Location:Login.php");
+    }
     ?>
 </head>
 
@@ -41,11 +44,11 @@
     $conn->getQR_Show();
     $conn->show_QRCode();
     $conn->getUser();
-    
+
     $getUser = $_SESSION['showUser'];
 
     $getQrCode = $_SESSION['showQrCode'];
-    
+
     // $idEvent = $_REQUEST['idevent'];
     // $eid = $product[$idEvent];
     // echo $eid['eventname'];
@@ -200,7 +203,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <!-- <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
@@ -209,7 +212,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -259,174 +262,199 @@
                     </ul>
 
                 </nav>
-                <!-- End of Topbar -->
 
-                <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <div class="card shadow   mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-2">
+                                    <h6 class="m-0 font-weight-bold text-primary">สมาชิกที่เข้าร่วมกิจกรรม</h6>
+                                </div>
+                                <div class="col-12">
+                                    <!-- <button class="m-0 font-weight-bold text-primary" style="float:right;">บันทึก PDF</button> -->
+                                    <input class="m-0 font-weight-bold text-primary" style="float:right;" type="button" value="บันทึก PDF" onclick="PrintDiv();" />
 
-                    <!-- Page Heading -->
-                    <!-- <h1 class="h3 mb-2 text-gray-800">ผู้ใช้งาน</h1> -->
-                    <!-- DataTales Example -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="divToPrint">
+                            <div class="colum-md-2">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+                                            <thead>
+                                                <tr>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">No.</th>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">Name</th>
+
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">Gender</th>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">Age</th>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">Phone</th>
+
+                                                </tr>
+                                            </thead>
+                                            <?php
+                                            $a = 0;
+                                            $n = 0;
+                                            $m = 0;
+                                            $w = 0;
+                                            while ($a < count($getQrCode)) : ?>
+                                                <?php if ($getQrCode[$a]['eventid']['event_id'] == $idreportevent['event_id']) { ?>
+                                                    <?php if ($getQrCode[$a]['qrcodeeventstatus'] == 0) { ?>
+                                                        <?php $n++ ?>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"> <?php echo $n ?></th>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"><?php echo $getQrCode[$a]['userid']['name']; ?></th>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"><?php if ($getQrCode[$a]['userid']['gender'] == "G01") {
+                                                                                                                                        echo "ชาย";
+                                                                                                                                        $m++;
+                                                                                                                                    } else {
+                                                                                                                                        echo "หญิง";
+                                                                                                                                        $w++;
+                                                                                                                                    }  ?></th>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"><?php echo $getQrCode[$a]['userid']['age']; ?></th>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"><?php echo $getQrCode[$a]['userid']['phone']; ?></th>
+                                                            </tr>
+                                                        </tbody>
+                                                    <?php } ?>
+                                                <?php } ?>
+                                                <?php $a++ ?>
+                                            <?php endwhile ?>
+                                            <!-- <div class="row-5">
+                                                <div class="row">
+                                                    <h6>จำนวนคนที่เข้าร่วมกิจกรรมทั้งหมด <h6>
+                                                            <h4> <?php echo $n; ?></h4>
+                                                            <h6> คน</h6>
+                                                </div>
+                                            </div>
+                                            <div class="row-5">
+                                                <div class="row">
+                                                    <h6>เพศชายทั้งหมด <h6>
+                                                            <h4> <?php echo $m; ?></h4>
+                                                            <h6> คน</h6>
+                                                </div>
+                                            </div>
+                                            <div class="row-5">
+                                                <div class="row">
+                                                    <h6>เพศหญิงทั้งหมด <h6>
+                                                            <h4> <?php echo $w; ?></h4>
+                                                            <h6> คน</h6>
+                                                </div>
+                                            </div> -->
+
+
+                                            <h5> <?php
+                                                    echo  "จำนวนคนที่เข้าร่วมกิจกรรมทั้งหมด  " . $n . " คน", " เพศชายทั้งหมด" . " $m" . " คน", " เพศหญิง", " $w", " คน"
+                                                    ?></h5>
+                                            <!-- </form>                 -->
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="container-fluid">
                     <div class="card shadow   mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">ผู้ใช้งาน</h6>
+                            <div class="row">
+                                <div class="col-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">สมาชิกที่ไม่ได้เข้าร่วมกิจกรรม</h6>
+                                </div>
+                                <div class="col-12">
+                                    <!-- <button class="m-0 font-weight-bold text-primary" style="float:right;">บันทึก PDF</button> -->
+                                    <input class="m-0 font-weight-bold text-primary" style="float:right;" type="button" value="บันทึก PDF" onclick="Printnot();" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="colum-md-2">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Name</th>
 
-                                                <th>Gender</th>
-                                                <th>Age</th>
-                                                <th>Phone</th>
+                        <div id="reportdontjoie">
+                            <div class="colum-md-2">
+                                <div class="card-body">
 
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Name</th>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">No.</th>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">Name</th>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">Gender</th>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">Age</th>
+                                                    <th style=" border: 1px solid black;  border-collapse: collapse;">Phone</th>
 
-                                                <th>Gender</th>
-                                                <th>Age</th>
-                                                <th>Phone</th>
+                                                </tr>
+                                            </thead>
+                                            <?php
+                                            $a = 0;
+                                            $n = 0;
+                                            $f = 0;
+                                            $v = 0;
+                                            while ($a < count($getQrCode)) : ?>
+                                                <?php if ($getQrCode[$a]['eventid']['event_id'] == $idreportevent['event_id']) { ?>
+                                                    <?php if ($getQrCode[$a]['qrcodeeventstatus'] == 1) { ?>
+                                                        <?php $n++ ?>
+                                                        <tbody>
+                                                            <tr>
 
-                                            </tr>
-                                        </tfoot>
-                                        <!-- <form action="ChackData.php?Status=EditUser">                -->
-
-                                        <?php
-                                        $a = 0;
-                                        $n = 0;
-                                        while ($a < count($getQrCode)) : ?>
-                                            <?php if ($getQrCode[$a]['eventid']['event_id'] == $idreportevent['event_id']) {?>
-                                                <?php if ($getQrCode[$a]['qrcodeeventstatus'] == 0) { ?>
-                                                    <?php $n++ ?>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td> <?php echo $n ?></td>
-                                                            <td><?php echo $getQrCode[$a]['userid']['name']; ?></td>
-                                                            <td><?php echo $getQrCode[$a]['userid']['gender']; ?></td>
-                                                            <td><?php echo $getQrCode[$a]['userid']['age']; ?></td>
-                                                            <td><?php echo $getQrCode[$a]['userid']['phone']; ?></td>
-                                                        </tr>
-                                                    </tbody>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"> <?php echo $n ?></th>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"><?php echo $getQrCode[$a]['userid']['name']; ?></th>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"><?php if ($getQrCode[$a]['userid']['gender'] == "G01") {
+                                                                                                                                        echo "ชาย";
+                                                                                                                                        $f++;
+                                                                                                                                    } else {
+                                                                                                                                        echo "หญิง";
+                                                                                                                                        $v++;
+                                                                                                                                    }  ?></th>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"><?php echo $getQrCode[$a]['userid']['age']; ?></th>
+                                                                <th style=" border: 1px solid black;  border-collapse: collapse;"><?php echo $getQrCode[$a]['userid']['phone']; ?></th>
+                                                            </tr>
+                                                        </tbody>
+                                                    <?php } ?>
                                                 <?php } ?>
-                                            <?php } ?>
-                                            <?php $a++ ?>
-                                        <?php endwhile ?>
-                                        <?php echo  "จำนวนคนที่เข้าร่วมกิจกรรมทั้งหมด  " . $n . " คน" ?>
-                                        <!-- </form>                 -->
-                                    </table>
+                                                <?php $a++ ?>
+                                            <?php endwhile ?>
+                                            <h5> <?php echo  "จำนวนคนที่เข้าร่วมกิจกรรมทั้งหมด  " . $n . " คน", " เพศชายทั้งหมด" . " $f" . " คน", " เพศหญิง", " $v", " คน" ?></h5>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid">
-                    <!-- Page Heading -->
-                    <!-- <h1 class="h3 mb-2 text-gray-800">ผู้ใช้งาน</h1> -->
-                    <!-- DataTales Example -->
-                    <div class="card shadow   mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">ผู้ใช้งาน</h6>
-                        </div>
-                        <div class="colum-md-2">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Name</th>
-                                                <th>Gender</th>
-                                                <th>Age</th>
-                                                <th>Phone</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Name</th>
-                                                <th>Gender</th>
-                                                <th>Age</th>
-                                                <th>Phone</th>
-
-                                            </tr>
-                                        </tfoot>
-                                        <!-- <form action="ChackData.php?Status=EditUser">                -->
-
-                                        <?php
-                                        $a = 0;
-                                        $n = 0;
-                                        while ($a < count($getQrCode)) : ?>
-                                            <?php if ($getQrCode[$a]['eventid']['event_id'] == $idreportevent['event_id']) { ?>
-                                                <?php if ($getQrCode[$a]['qrcodeeventstatus'] == 1) { ?>
-                                                    <?php $n++ ?>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td> <?php echo $n ?></td>
-                                                            
-                                                            <td><?php echo $getQrCode[$a]['userid']['name']; ?></td>
-                                                            <td><?php echo $getQrCode[$a]['userid']['gender']; ?></td>
-                                                            <td><?php echo $getQrCode[$a]['userid']['age']; ?></td>
-                                                            <td><?php echo $getQrCode[$a]['userid']['phone']; ?></td>
-                                                        </tr>
-                                                    </tbody>
-                                                <?php } ?>
-                                            <?php } ?>
-                                            <?php $a++ ?>
-                                        <?php endwhile ?>
-
-                                        <?php echo  "จำนวนคนที่ไม่ได้เข้าร่วมกิจกรรมทั้งหมด  " . $n . " คน" ?>
-                                        <!-- </form>                 -->
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.container-fluid -->
-
             </div>
-            <!-- Footer -->
-
-            <!-- End of Footer -->
-
         </div>
-        <!-- End of Content Wrapper -->
-
     </div>
-    <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button-->
+
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">ออกจากระบบ</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">คุณต้องการออกจากระบบนี้หรือไม่</div>
-                            <div class="modal-footer">
-                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">ยกเลิก</button>
-                                <a class="btn btn-outline-success" href="Login.php">ยืนยัน</a>
-                            </div>
-                        </div>
-                    </div>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">ออกจากระบบ</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
                 </div>
+                <div class="modal-body">คุณต้องการออกจากระบบนี้หรือไม่</div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-danger" type="button" data-dismiss="modal">ยกเลิก</button>
+                    <a class="btn btn-outline-success" href="Login.php">ยืนยัน</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -443,6 +471,26 @@
 
     <!-- Page level custom scripts -->
     <script src="js/demo/datatables-demo.js"></script>
+
+    <script type="text/javascript">
+        function PrintDiv() {
+            var divToPrint = document.getElementById('divToPrint');
+            var popupWin = window.open('', '_blank', 'width=300,height=300');
+            popupWin.document.open();
+            popupWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</html>');
+            popupWin.document.close();
+        }
+    </script>
+
+    <script type="text/javascript">
+        function Printnot() {
+            var reportdontjoie = document.getElementById('reportdontjoie');
+            var popupWin = window.open('', '_blank', 'width=300,height=300');
+            popupWin.document.open();
+            popupWin.document.write('<html><body onload="window.print()">' + reportdontjoie.innerHTML + '</html>');
+            popupWin.document.close();
+        }
+    </script>
 
 </body>
 

@@ -10,34 +10,47 @@ use GuzzleHttp\Client;
 
 class dbconnect
 {
-    public function connect(){
-        $mysqli = new mysqli('202.28.34.197', 'qrsystem', 'G4g5v#9a', 'proj61_qrsystem');
-        $mysqli->set_charset("utf8");
-        if (mysqli_connect_errno()) {
-            echo "Connection Failed: " . mysqli_connect_errno();
-            exit();
-        } else {
-        }
-        return $mysqli;
-    }
+   public $urllocalhost="https://localhost:1234";
+   public $urluat="https://qrprojecttogit.herokuapp.com/";
+    // public function connect(){
+    //     $mysqli = new mysqli('202.28.34.197', 'qrsystem', 'G4g5v#9a', 'proj61_qrsystem');
+    //     $mysqli->set_charset("utf8");
+    //     if (mysqli_connect_errno()) {
+    //         echo "Connection Failed: " . mysqli_connect_errno();
+    //         exit();
+    //     } else {
+    //     }
+    //     return $mysqli;
+    // }
+
+    // public function connect(){
+    //     $mysqli = new mysqli('localhost', 'root', '', 'qr_project');
+    //     $mysqli->set_charset("utf8");
+    //     if (mysqli_connect_errno()) {
+    //         echo "Connection Failed: " . mysqli_connect_errno();
+    //         exit();
+    //     } else {
+    //     }
+    //     return $mysqli;
+    // }
 
 
-    public function insertimage($imgContent)
-    {
-        echo $imgContent;
-        $sql = "UPDATE `user` SET `Image_Profile`='" . $imgContent . "' WHERE User_ID=12";
-        $sql = "UPDATE `image` SET `image`='" . $imgContent . "' WHERE id=18";
+    // public function insertimage($imgContent)
+    // {
+    //     echo $imgContent;
+    //     $sql = "UPDATE `user` SET `Image_Profile`='" . $imgContent . "' WHERE User_ID=12";
+    //     $sql = "UPDATE `image` SET `image`='" . $imgContent . "' WHERE id=18";
 
-        $result = $this->connect()->query($sql);
-    }
+    //     $result = $this->connect()->query($sql);
+    // }
 
 
-    public function showimage()
-    {
-        $sql = "SELECT `image` FROM `image` ORDER BY id DESC";
-        $result = $this->connect()->query($sql);
-        return $result;
-    }
+    // public function showimage()
+    // {
+    //     $sql = "SELECT `image` FROM `image` ORDER BY id DESC";
+    //     $result = $this->connect()->query($sql);
+    //     return $result;
+    // }
 
 
     // public function showimage(){
@@ -173,10 +186,17 @@ class dbconnect
         // echo $suppersum[0]['user_ID'];
         if ($response->getStatusCode() == 200) {
             if($suppersum[0]['userstatus']==0){
-                Header("Location:Login.php");
+            // $_SESSION['loginerror']=false;
+            $error = "ผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+            Header("Location:Login.php?title=".$error);
             }else{
             $body = $response->getBody();
             $_SESSION['data_user'] = $suppersum[0];
+            $_SESSION['checkQrcodeByEvent']=false;
+            $_SESSION['chacklogin']=false;
+            $_SESSION['loginerror']=false;
+
+            // $_SESSION['Login_User_ID'] = true;
             Header("Location:Home.php");
             }
 
@@ -204,7 +224,7 @@ class dbconnect
             $body = $response->getBody();
 
             $_SESSION['data_user'] = $suppersum[0];
-
+         
 
             Header("Location:Home.php");
         } else {
@@ -316,35 +336,35 @@ class dbconnect
     //             echo 'Insert NoGood';
     //         }
     // }
-    public function EditProfile($Email, $Name, $NickName, $Age, $Phone, $Line_ID, $Gender, $Image_Profile)
-    {
-        $sql = " UPDATE user SET Email = '" . $Email . "', Name = '" . $Name . "', NickName = '" . $NickName . "',Age = '" . $Age . "',Phone = '" . $Phone . "',Line_ID = '" . $Line_ID . "',Gender = '" . $Gender . "' WHERE User_ID = '" . $_SESSION['Login_User_ID'] . "' ";
-        echo $sql;
-        if (mysqli_query($this->connect(), $sql)) {
-            Header("Location:Profile.php");
-            echo 'Eventgood';
-        } else {
-            echo 'Insert NoGood';
-        }
-    }
+    // public function EditProfile($Email, $Name, $NickName, $Age, $Phone, $Line_ID, $Gender, $Image_Profile)
+    // {
+    //     $sql = " UPDATE user SET Email = '" . $Email . "', Name = '" . $Name . "', NickName = '" . $NickName . "',Age = '" . $Age . "',Phone = '" . $Phone . "',Line_ID = '" . $Line_ID . "',Gender = '" . $Gender . "' WHERE User_ID = '" . $_SESSION['Login_User_ID'] . "' ";
+    //     echo $sql;
+    //     if (mysqli_query($this->connect(), $sql)) {
+    //         Header("Location:Profile.php");
+    //         echo 'Eventgood';
+    //     } else {
+    //         echo 'Insert NoGood';
+    //     }
+    // }
 
 
-    public function selectqrcode($eventid, $userid)
-    {
-        echo "123";
-        echo $eventid;
-        echo $userid;
+    // public function selectqrcode($eventid, $userid)
+    // {
+    //     echo "123";
+    //     echo $eventid;
+    //     echo $userid;
 
-        $sql = "SELECT `User_ID`, `Event_ID`FROM `qr_event` WHERE `User_ID`=$userid and `Event_ID`=$eventid";
-        // echo $sql;
-        if (mysqli_query($this->connect(), $sql)) {
-            $Event_ID = $_SESSION['Event_ID'];
-            Header("Location:Data_Activity.php?Event_ID=$Event_ID");
-            echo 'Eventgood';
-        } else {
-            echo 'Insert NoGood';
-        }
-    }
+    //     $sql = "SELECT `User_ID`, `Event_ID`FROM `qr_event` WHERE `User_ID`=$userid and `Event_ID`=$eventid";
+    //     // echo $sql;
+    //     if (mysqli_query($this->connect(), $sql)) {
+    //         $Event_ID = $_SESSION['Event_ID'];
+    //         Header("Location:Data_Activity.php?Event_ID=$Event_ID");
+    //         echo 'Eventgood';
+    //     } else {
+    //         echo 'Insert NoGood';
+    //     }
+    // }
 
 
     public function EditEvent($eventid,$eventname,$Pevent,$Location,$provind,$People,$date,$time,$dateend,$timeend,$folder,$Event_Particulars)
@@ -471,12 +491,12 @@ class dbconnect
     }
 
 
-    public function getEvent_My()
-    {
-        $User_ID = $_SESSION['Login_User_ID'];
-        $sql = "SELECT * FROM event WHERE `User_ID` = '" . $User_ID . "' and `Event_Delet`= true";
-        return $this->connect()->query($sql);
-    }
+    // public function getEvent_My()
+    // {
+    //     $User_ID = $_SESSION['Login_User_ID'];
+    //     $sql = "SELECT * FROM event WHERE `User_ID` = '" . $User_ID . "' and `Event_Delet`= true";
+    //     return $this->connect()->query($sql);
+    // }
 
     // public function getEvent_show_ByID($Username,$Password){
     //     $client = new Client([
@@ -543,11 +563,11 @@ class dbconnect
         }
     }
 
-    public function getUser_All()
-    {
-        $sql = " SELECT ROW_NUMBER() OVER (ORDER BY `Name`) AS number,  `Name`,`Email`, `NickName`, `Gender`, `Age`, `Phone`, `Line_ID`, `User_ID` FROM `user` where Admin_user = 1 and User_Status = 1";
-        return $this->connect()->query($sql);
-    }
+    // public function getUser_All()
+    // {
+    //     $sql = " SELECT ROW_NUMBER() OVER (ORDER BY `Name`) AS number,  `Name`,`Email`, `NickName`, `Gender`, `Age`, `Phone`, `Line_ID`, `User_ID` FROM `user` where Admin_user = 1 and User_Status = 1";
+    //     return $this->connect()->query($sql);
+    // }
     public function getUser()
     {
         $client = new Client([
@@ -569,11 +589,11 @@ class dbconnect
 
 
 
-    public function getUser_Admin()
-    {
-        $sql = " SELECT ROW_NUMBER() OVER (ORDER BY `Name`) AS number,  `Name`,`Email`, `NickName`, `Gender`, `Age`, `Phone`, `Line_ID` FROM `user` where Admin_user = 0";
-        return $this->connect()->query($sql);
-    }
+    // public function getUser_Admin()
+    // {
+    //     $sql = " SELECT ROW_NUMBER() OVER (ORDER BY `Name`) AS number,  `Name`,`Email`, `NickName`, `Gender`, `Age`, `Phone`, `Line_ID` FROM `user` where Admin_user = 0";
+    //     return $this->connect()->query($sql);
+    // }
     // public function getProvince(){
     //     $sql = " SELECT `Province_ID`, `Province_Code`, `Province_Name` FROM `p_province`"; 
     //     return $this->connect()->query($sql);
@@ -583,79 +603,79 @@ class dbconnect
     //     return $this->connect()->query($sql);
     // }
 
-    public function getShow_QR_Code_My()
-    {
-        $User_ID = $_SESSION['Login_User_ID'];
-        $sql = "SELECT * FROM  qr_event
-        LEFT JOIN event
-        ON event.Event_ID = qr_event.Event_ID
-        LEFT JOIN user
-        ON user.User_ID  = qr_event.User_ID 
-        where qr_event.User_ID = '" . $User_ID . "'";
-        return $this->connect()->query($sql);
-    }
-    public function getShow_QR_Code_Scan($QR_Code_ID)
-    {
-        $User_ID = $_SESSION['Login_User_ID'];
-        $sql = "SELECT * FROM  qr_event
-        LEFT JOIN event
-        ON event.Event_ID = qr_event.Event_ID
-        LEFT JOIN user
-        ON user.User_ID  = qr_event.User_ID 
-        where Qrcode_ID = '" . $QR_Code_ID . "'";
-        return $this->connect()->query($sql);
-    }
+    // public function getShow_QR_Code_My()
+    // {
+    //     $User_ID = $_SESSION['Login_User_ID'];
+    //     $sql = "SELECT * FROM  qr_event
+    //     LEFT JOIN event
+    //     ON event.Event_ID = qr_event.Event_ID
+    //     LEFT JOIN user
+    //     ON user.User_ID  = qr_event.User_ID 
+    //     where qr_event.User_ID = '" . $User_ID . "'";
+    //     return $this->connect()->query($sql);
+    // }
+    // public function getShow_QR_Code_Scan($QR_Code_ID)
+    // {
+    //     $User_ID = $_SESSION['Login_User_ID'];
+    //     $sql = "SELECT * FROM  qr_event
+    //     LEFT JOIN event
+    //     ON event.Event_ID = qr_event.Event_ID
+    //     LEFT JOIN user
+    //     ON user.User_ID  = qr_event.User_ID 
+    //     where Qrcode_ID = '" . $QR_Code_ID . "'";
+    //     return $this->connect()->query($sql);
+    // }
 
-    public function getShow_QR_Code_True()
-    {
-        $User_ID = $_SESSION['Login_User_ID'];
-        $sql = "SELECT * FROM user
-        LEFT JOIN  qr_event
-        ON qr_event.User_ID = user.User_ID
-        LEFT JOIN event
-        ON event.Event_ID = qr_event.Event_ID
-        where user.User_ID = '" . $User_ID . "' and qr_event.Qrcode_Status = true";
-        return $this->connect()->query($sql);
-    }
-    public function getShow_QR_Code_False()
-    {
-        $User_ID = $_SESSION['Login_User_ID'];
-        $sql = "SELECT * FROM user
-        LEFT JOIN  qr_event
-        ON qr_event.User_ID = user.User_ID
-        LEFT JOIN event
-        ON event.Event_ID = qr_event.Event_ID
-        where user.User_ID = '" . $User_ID . "' and qr_event.Qrcode_Status = false";
-        return $this->connect()->query($sql);
-    }
+    // public function getShow_QR_Code_True()
+    // {
+    //     $User_ID = $_SESSION['Login_User_ID'];
+    //     $sql = "SELECT * FROM user
+    //     LEFT JOIN  qr_event
+    //     ON qr_event.User_ID = user.User_ID
+    //     LEFT JOIN event
+    //     ON event.Event_ID = qr_event.Event_ID
+    //     where user.User_ID = '" . $User_ID . "' and qr_event.Qrcode_Status = true";
+    //     return $this->connect()->query($sql);
+    // }
+    // public function getShow_QR_Code_False()
+    // {
+    //     $User_ID = $_SESSION['Login_User_ID'];
+    //     $sql = "SELECT * FROM user
+    //     LEFT JOIN  qr_event
+    //     ON qr_event.User_ID = user.User_ID
+    //     LEFT JOIN event
+    //     ON event.Event_ID = qr_event.Event_ID
+    //     where user.User_ID = '" . $User_ID . "' and qr_event.Qrcode_Status = false";
+    //     return $this->connect()->query($sql);
+    // }
     public function get_User()
     {
-        $suppersum['user'] = $_SESSION['Login_User_ID'];
+        $suppersum['user'] = $_SESSION['data_user'];
         return $suppersum;
     }
     // public function getShow_UserProfile(){
     //     $sql = "SELECT name,NickName,Email,Gender,Age,Phone,Line_ID,Image_Profile FROM `user`WHERE User_ID = 12"; 
     //     return $this->connect()->query($sql);
     // }
-    public function getEvent_false()
-    {
-        $sql = "SELECT * FROM `event` WHERE Event_Status = false";
-        return $this->connect()->query($sql);
-    }
-    public function selecteventid($data)
-    {
-        $sql = "SELECT `event_id` FROM `event` WHERE `event_id`=$data";
-        return $this->connect()->query($sql);
+    // public function getEvent_false()
+    // {
+    //     $sql = "SELECT * FROM `event` WHERE Event_Status = false";
+    //     return $this->connect()->query($sql);
+    // }
+    // public function selecteventid($data)
+    // {
+    //     $sql = "SELECT `event_id` FROM `event` WHERE `event_id`=$data";
+    //     return $this->connect()->query($sql);
 
-        // echo $a;
-        // $sql = "SELECT * FROM `event` WHERE Event_Status = false";
-        // return $this->connect()->query($sql);
-    }
-    public function getEvent_true()
-    {
-        $sql = "SELECT * FROM `event` WHERE Event_Status = true";
-        return $this->connect()->query($sql);
-    }
+    //     // echo $a;
+    //     // $sql = "SELECT * FROM `event` WHERE Event_Status = false";
+    //     // return $this->connect()->query($sql);
+    // // }
+    // public function getEvent_true()
+    // {
+    //     $sql = "SELECT * FROM `event` WHERE Event_Status = true";
+    //     return $this->connect()->query($sql);
+    // }
     // public function INSERT_QR($User_ID,$Event_ID,$Qrcode_Status,$Qrcode_Path,$Qrcode_Event_Status){
     //     $sql = "INSERT INTO `qr_event`(`User_ID`, `Event_ID`, `Qrcode_Status`, `Qrcode_Path`, `Qrcode_Event_Status`) VALUES 
     //     ('".$User_ID."','".$Event_ID."','".$Qrcode_Status."','".$Qrcode_Path."','".$Qrcode_Event_Status."')"; 
@@ -777,9 +797,6 @@ class dbconnect
     }
     public function getdataQrCode($eventid,$Event_ID)
     {
-        // echo "eventid=",$eventid;
-        // echo $User_ID,$Event_ID,$Qrcode_Status,$Qrcode_Path,$Qrcode_Event_Status;
-        // echo $Qrcode_ID,$Qrcode_Path;
         $client = new Client([
             // Base URI is used with relative requests
             'base_uri' => 'https://qrprojecttogit.herokuapp.com',
@@ -807,6 +824,7 @@ class dbconnect
                     // echo $suppersum[0]['userid']['name'];
                     Header("Location:submituserqrcode.php");  
             }else{
+                $_SESSION['checkQrcodeByEvent']=true;
                 Header("Location:data_Activity2.php");  
             }
 
@@ -930,7 +948,7 @@ class dbconnect
     }
     public function getchackqrcodeid($idevent)
     {
-        echo "44444aa";
+        // echo "44444aa";
         echo $idevent;
         $client = new Client([
             // Base URI is used with relative requests
@@ -973,6 +991,35 @@ class dbconnect
 
         ]);
         Header("Location:Activity_My.php"); 
+    }
+    public function getqrcard($eventid)
+    {
+        // echo "44444aa";
+        echo $eventid;
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => 'https://qrprojecttogit.herokuapp.com',
+        ]);
+        $response = $client->request('POST', '/Qr_project/getqridqrcode', [
+            'json' => [
+                'qrcode_ID' => $eventid,
+                
+            ]
+
+
+        ]);
+        $body = $response->getBody();
+        $sum = $body . "";
+        $suppersum = json_decode($sum, true);
+        // echo $suppersum[0]['user_ID'];
+        if ($response->getStatusCode() == 200) {
+            $body = $response->getBody();
+            Header("Location:crad.php");  
+            return $suppersum[0];
+            // echo $suppersum[0]['userid']['name'];
+            
+        }
+
     }
     // public function getQR($data1)
     // {

@@ -19,6 +19,9 @@
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <?php
     require_once './dbconnect.php';
+    if(!isset($_SESSION['chacklogin']) && empty($_SESSION['chacklogin'])) {
+        Header("Location:Login.php");
+    }
     ?>
 </head>
 
@@ -97,7 +100,7 @@
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">รายการ คิวอาร์โค้ด ของฉัน</h6>
-                        <a class="collapse-item" href="QR_Code_All.php">คิวอาร์โค้ด กิจกรรมทั้งหมด</a>
+                        <a class="collapse-item" href="QR_Code_All2.php">คิวอาร์โค้ด กิจกรรมทั้งหมด</a>
                         <a class="collapse-item" href="QR_Code_Join.php">กิจกรรมที่เข้าร่วม</a>
                         <a class="collapse-item" href="QR_Code_Not_Join.php">กิจกรรมที่ยังไม่เข้าร่วม </a>
 
@@ -186,7 +189,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <!-- <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
@@ -195,7 +198,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -206,7 +209,7 @@
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
                             <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                            <!-- <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
                                         <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
@@ -217,7 +220,7 @@
                                         </div>
                                     </div>
                                 </form>
-                            </div>
+                            </div> -->
                         </li>
 
                         <!-- <div class="topbar-divider d-none d-sm-block"></div> -->
@@ -255,7 +258,7 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">ผู้ใช้งาน</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">ผู้ดูแลระบบ</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -290,6 +293,9 @@
                                     <?php
                                     $i = 0;
                                     $n = 0;
+                                    $m = 0;
+                                    $w = 0;
+                                    
                                     while ($i < count($getUser)) : ?>
                                         <?php if ($getUser[$i]['adminuser'] == 0 & $getUser[$i]['userstatus'] == 1) { ?>
                                             <?php $n++; ?>
@@ -298,19 +304,19 @@
                                                     <td><?php echo $n; ?></td>
                                                     <td><?php echo $getUser[$i]['name']; ?></td>
                                                     <td><?php echo $getUser[$i]['nickname']; ?></td>
-                                                    <td><?php echo $getUser[$i]['gender']; ?></td>
+                                                    <td><?php if($getUser[$i]['gender']=="G01"){echo "ชาย"; $m++;}else{echo "หญิง";$w++;} ?></td>
                                                     <td><?php echo $getUser[$i]['age']; ?></td>
                                                     <td><?php echo $getUser[$i]['phone']; ?></td>
                                                     <td><?php echo $getUser[$i]['lineid']; ?></td>
                                                     <td><?php echo $getUser[$i]['email']; ?>
-                                                    <td><a class="btn btn-outline-success" href="#" data-toggle="modal" data-target="#deletuser">ลบข้อมูลผู้ใช้</a></td>
+                                                    <td><a class="btn btn-outline-success" href="#" data-toggle="modal" data-target="#deletuser">ลบข้อมูลผู้ดูแลระบบ</a></td>
                                                     <!-- <a href="#" data-toggle="modal" data-target="#ScanQRcode" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-sm text-white-50"></i>ลงทะเบียนผู้ใช้</a> -->
                                                 </tr>
                                                 <div class="modal fade" id="deletuser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" align="center">
                                                     <div class="modal-dialog" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">ลบผู้ดูแลระบบ</h5>
+                                                                <h5 class="modal-title" id="exampleModalLabel">ลบข้อมูลผู้ดูแลระบบ</h5>
                                                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">×</span>
                                                                 </button>
@@ -328,6 +334,7 @@
 
                                         <?php $i++ ?>
                                     <?php endwhile ?>
+                                    <?php echo "ผู้ดูแลระบบทั้งหมด ".$n." คน  ผู้ชาย ".$m." คน  ผู้หญิง ".$w." คน" ?>
                                     <!-- </form>                 -->
                                 </table>
                             </div>

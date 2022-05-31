@@ -112,20 +112,21 @@ else if ($Status == "InsertEvent") {
 //     $con->InsertEvent($User_ID,$Event_Name,$Event_Particulars,$Event_People,$Event_Province,$Event_Location,$Event_Date,$Event_DateEnd,$Event_Time,$Event_TimeEnd,$Event_Image,$Event_Type,$Event_Status,$Event_Delet);
 
 // }
-else if ($Status == "EditProfile") {
-    $Email  = $_POST['Email'];
-    $Name   = $_POST['Name'];
-    $NickName = $_POST['NickName'];
-    $Age = $_POST['Age'];
-    $Phone = $_POST['Phone'];
-    $Line_ID = $_POST['Line_ID'];
-    $Gender = $_POST['Gender'];
-    $Image_Profile = null;
-    $con = new dbconnect();
-    echo $User_ID;
-    $con->connect();
-    $con->EditProfile($Email, $Name, $NickName, $Age, $Phone, $Line_ID, $Gender, $Image_Profile);
-} else if ($Status == "eventid") {
+// else if ($Status == "EditProfile") {
+//     $Email  = $_POST['Email'];
+//     $Name   = $_POST['Name'];
+//     $NickName = $_POST['NickName'];
+//     $Age = $_POST['Age'];
+//     $Phone = $_POST['Phone'];
+//     $Line_ID = $_POST['Line_ID'];
+//     $Gender = $_POST['Gender'];
+//     $Image_Profile = null;
+//     $con = new dbconnect();
+//     echo $User_ID;
+//     $con->connect();
+//     $con->EditProfile($Email, $Name, $NickName, $Age, $Phone, $Line_ID, $Gender, $Image_Profile);
+// }
+else if ($Status == "eventid") {
     $data = $_REQUEST["event"];
     // echo "123";
     // echo "eventid=" ,$data;
@@ -139,9 +140,20 @@ else if ($Status == "EditProfile") {
     // $Image_Profile = null;
     // $con = new dbconnect();
     // echo $User_ID;
-    $con = new dbconnect();
-    $con->selecteventid($data);
+    // $con = new dbconnect();
+    // $con->selecteventid($data);
 }
+
+
+
+else if ($Status == "search") {
+    // echo "115599";
+    $data = $_POST['datasearch'];
+    echo $data;
+   
+}
+
+
 // else if($Status=="EditEvent"){
 //     $Event_Name  = $_POST['Event_Name'];
 //     $Event_People   = $_POST['Event_People'];
@@ -178,23 +190,14 @@ else if ($Status == "EditDelet") {
     $con = new dbconnect();
     // $con->connect();
     $con->DeletEditAdmin($User_ID);
-
 } else if ($Status == "scanqrcode") {
     // echo "123";
     $User_ID = $_POST["text"];
     $headers = explode('=', $User_ID);
     $eventid = $headers[1];
     $Event_ID = $_REQUEST["idevent"];
-
-    // echo $Event_ID;
-    // echo $eventid;
-
-    // echo  $eventid;
-
     $con = new dbconnect();
-    // $con->connect();
-    $con->getdataQrCode($eventid,$Event_ID);
-
+    $con->getdataQrCode($eventid, $Event_ID);
 
 } else if ($Status == "QR_Code") {
     $con = new dbconnect();
@@ -208,7 +211,7 @@ else if ($Status == "EditDelet") {
     $qr = $con->Get_QR($User_ID, $Event_ID);
     // $data = $_SESSION['showUser'];
 
-    $url = "http://chart.apis.google.com/chart?cht=qr&chl=http://localhost/ProJectQrCode/frontend/crad.php?qrcodeid=" . $qr . "&chs=450";
+    $url = "http://chart.apis.google.com/chart?cht=qr&chl=http://qrsystem.comsciproject.com/crad.php?idqrcode=" . $qr . "&chs=450";
     $img = "Image_Qr_Code/" . $User_ID . "_" . $Event_ID . ".png";
     file_put_contents($img, file_get_contents($url));
 
@@ -225,19 +228,13 @@ else if ($Status == "EditDelet") {
 } else if ($Status == "chackuser") {
     // echo "123";
     $idevent = $_REQUEST['eventid'];
-    echo $idevent;
-
-
-
+    // echo $idevent;
     $con = new dbconnect();
     $con->getEventByid($idevent);
 } else if ($Status == "checkReportevent") {
     // echo "123";
     $idevent = $_REQUEST['idevent'];
     //   echo $idevent;
-
-
-
     $con = new dbconnect();
     $con->getchackreportEventByid($idevent);
 } else if ($Status == "dataQr") {
@@ -250,14 +247,31 @@ else if ($Status == "EditDelet") {
     echo $idevent;
     $con = new dbconnect();
     $con->EndEvent($idevent);
-
-} 
-else if ($Status == "commentevent") {
+} else if ($Status == "commentevent") {
     // echo "112233";
     $data = $_POST['comment'];
     $eventid = $_REQUEST['eventid'];
     $userid = $_REQUEST['userid'];
 
     $con = new dbconnect();
-    $con->insertComment($data,$eventid,$userid);
+    $con->insertComment($data, $eventid, $userid);
+} else if ($Status == "Pcard") {
+    // echo "a";
+    // $data = $_POST['comment'];
+    $eventid = $_REQUEST['event'];
+    // echo $eventid;
+
+    //  $userid = $_REQUEST['event'];
+    $con = new dbconnect();
+    $con->getqrcard($eventid);
 }
+//  else if ($Status == "search") {
+//     echo "a";
+//     // $data = $_POST['comment'];
+//     // $eventid = $_REQUEST['event'];
+//     // // echo $eventid;
+
+//     // //  $userid = $_REQUEST['event'];
+//     // $con = new dbconnect();
+//     // $con->getqrcard($eventid);
+// }

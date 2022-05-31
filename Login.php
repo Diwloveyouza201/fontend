@@ -8,10 +8,19 @@
 
 <body>
   <?php
+isset( $_REQUEST['title'] ) ? $error = $_REQUEST['title'] : $error = "";
+if($error != null){
+    echo "<script type='text/javascript'>
+    alert('.$error.');
+  </script>";
+}
   session_start();
-  if (!isset($_SESSION['Login_User_Username'])) {
-    $_SESSION['Login_User_ID'] = null;
-  }
+
+  //  session_destroy();
+  // header("Location:Login.php ");
+  // if (!isset($_SESSION['Login_User_Username'])) {
+  //   $_SESSION['Login_User_ID'] = NULL;
+  // }
   ?>
   <div>
     <a href="Login.php"><img src="Image\Logo-89.png"></a>

@@ -24,11 +24,18 @@
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <?php
     require_once './dbconnect.php';
+    if(!isset($_SESSION['chacklogin']) && empty($_SESSION['chacklogin'])) {
+        Header("Location:Login.php");
+    }
     ?>
 </head>
 
 <body id="data_Activity2">
     <?php
+    if( $_SESSION['checkQrcodeByEvent']){
+        echo "<script type='text/javascript'>alert('คิวอาร์โค้ดไม่ถูกต้อง');</script>";
+        $_SESSION['checkQrcodeByEvent']=false;
+     }
     $conn = new dbconnect();
     $dataevent = $_SESSION['showevent'];
     $userlogin = $_SESSION['data_user'];
@@ -39,6 +46,7 @@
     $data = $_SESSION['EventByID'];
     $PEvent = $_SESSION['P_Event'];
     $Province = $_SESSION['Province'];
+   
     // echo $data[0]['event_id'];
     // echo $data[0]['event_id'];
     ?>
@@ -276,59 +284,57 @@
                                         <span aria-hidden="true">×</span>
                                     </button>
                                 </div>
+                                <form action="ChackData.php?Status=scanqrcode&idevent=<?php echo $data[0]['event_id']; ?>" method="POST" enctype="multipart/form-data">
 
-                                <form action="./ChackData.php?Status=scanqrcode&idevent=<?php echo $data[0]['event_id']; ?>" method="POST" enctype="multipart/form-data">
-                                <!-- <video muted="true" playsinline="" style="width: 640px;"></video> -->
-                                <!-- <canvas id="qr-canvas" width="250" height="250" style="width: 250px; height: 250px; display: none;"></canvas> -->
                                     <div class="col-md-12" style="max-width: 50% position relative;" align="center">
-                                    <video muted="true" playsinline="" style="width: 640px;"></video>
+                                        <!-- <video muted="true" playsinline="" style="width: 640px;"></video> -->
                                         <video id="preview" width="50%" autoplay></video>
                                     </div>
-                                    <!-- <video id="preview" width="50%" autoplay="autoplay" class="active" style="transform: scaleX(-1);"></video> -->
-                                  <!--  <div class="col-md-12" align="center">
-                                        <label>SCAN QR CODE</label>
+                                    <div class="col-md-12" align="center">
+                                        <!-- <label>SCAN QR CODE</label> -->
                                         <input type="text" name="text" id="text" readonyy="" placeholder="scan qrcode" class="form-control">
-                                    </div> -->
+                                    </div>
                                     <div class="col" align="center">
                                         <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Cancel</button>
                                         <button class="btn btn-outline-success" name="submit" type="submit" value="submit">Create</button>
-                                    </div>
                                 </form>
-
-
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="Add_Edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" align="center">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">แก้ไขกิจกรรม</h5>
-                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                </div>
+                </div>
+                <div class="modal fade" id="Add_Edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" align="center">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">แก้ไขกิจกรรม</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
 
-                                <form action="insertevent.php?Status=EditEvent&event=<?php echo $data[0]['event_id']; ?>" method="POST" enctype="multipart/form-data">
-                                    <div class="col-md-12 ">
+                            <form action="insertevent.php?Status=EditEvent&event=<?php echo $data[0]['event_id']; ?>" method="POST" enctype="multipart/form-data">
+                                <div class="col-md-12 " style="height: 750px;">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="text-details-event">
+                                                <h5>กรุณาตรวจสอบข้อมูลให้เรียบร้อย</h5>
+                                            </div>
+                                        </div>
                                         <div class="row">
+                                            <div class="col-md-6 " style="border-right: 0.1px solid #e0e0e0;height: 750px;">
 
-                                            <div class="col-md-6 " style="border-right: 0.1px solid #e0e0e0;">
-                                                <div class="text-details-event"></i>
-                                                    <h10>กรุณาตรวจสอบข้อมูลให้เรียบร้อย</h10>
-                                                </div>
                                                 <div class="col-md-12" style="padding-bottom: 40px;padding-top: 20px;padding-left: 39px;">
                                                     <div class="row mt-2">
-                                                        <div class="col-md-8"><label style="margin-bottom: -2px;">กิจกรรม</label><input type="text" class="form-control" placeholder="ชื่อกิจกรรม" name="Event_Name" value="<?php echo $data[0]['eventname']; ?> " required></div>
+                                                        <div class="col-md-12"><label style="margin-bottom: -2px;">กิจกรรม</label><input type="text" class="form-control" placeholder="ชื่อกิจกรรม" name="Event_Name" value="<?php echo $data[0]['eventname']; ?> " required></div>
                                                     </div>
                                                     <div class="row mt-3">
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label>รายละเอียดกิจกรรม</label>
-                                                                <textarea type="text" class="form-control" rows="3" laceholder="-" name="Event_Particulars" value="" required><?php echo $data[0]['eventparticulars']; ?></textarea>
+                                                                <textarea type="text" class="form-control" rows="6" laceholder="-" name="Event_Particulars" value="" required><?php echo $data[0]['eventparticulars']; ?></textarea>
                                                                 <div class="gender"> <br>
                                                                     <label class="gender" for="">หมวดหมู่ </label><br>
-                                                                    <div class="row" style="padding-left: 11px;">
+                                                                    <div>
                                                                         <select class="form-control" name="PEvent">
                                                                             <!-- <option selected>เลือก</option> -->
                                                                             <?php $i = 0; ?>
@@ -351,7 +357,7 @@
                                                         </div>
                                                         <div class="col-md-12">
                                                             <label>สถานที่จัดกิจกรรม/Address</label>
-                                                            <textarea class="form-control" rows="2" laceholder="Address" name="Location" value="" required><?php echo $data[0]['eventname']; ?></textarea>
+                                                            <textarea class="form-control" rows="6" laceholder="Address" name="Location" value="" required><?php echo $data[0]['eventlocation']; ?></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -369,11 +375,11 @@
                                                                     <option value="<?php
                                                                                     echo $Province[$i]['province_ID'];
                                                                                     ?>" <?php
-                                                                                        if ($Province[$i]['province_ID'] == $data[0]['provinceModel']['province_ID']) {
-                                                                                            echo "selected";
-                                                                                        } ?>><?php
-                                                                                                echo $Province[$i]['provincename'];
-                                                                                                ?></option>
+                                                                                    if ($Province[$i]['province_ID'] == $data[0]['provinceModel']['province_ID']) {
+                                                                                        echo "selected";
+                                                                                    } ?>><?php
+                                                                                            echo $Province[$i]['provincename'];
+                                                                                            ?></option>
                                                                     <?php $i++; ?>
                                                                 <?php
                                                                 endwhile
@@ -390,7 +396,7 @@
                                             </div>
                                             <div class="col-md-6" style="padding-left: 0px;padding-right: 0px;">
                                                 <div class="col-md-8" style="">
-                                                    <br><br>
+                                                    <br>
                                                     <label>วันที่-เวลา / เริ่มกิจกรรม</label>
                                                     <input type="date" class="form-control" name="date" value="<?php echo $data[0]['eventdate']; ?>"></input><br>
                                                     <input type="time" class="form-control" name="time" value="<?php echo $data[0]['eventtime']; ?>"><br></input>
@@ -399,12 +405,12 @@
                                                     <input type="time" class="form-control" name="timeend" value="<?php echo $data[0]['eventtimeend']; ?>"></input><br><br>
 
                                                 </div>
-                                                <div class="col-10">
-                                                    <label style="margin-top: 7.5; text-align: right; display: block; padding-right: 50px;">เพิ่มภาพหน้าปกกิจกรรม</label>
-                                                    <div class="col-md-4 border-right" style="padding-right: 0px;padding-left: 12px;">
+                                                <div class="col-12">
+                                                    <label style="margin-top: 7.5; text-align: block;">เพิ่มภาพหน้าปกกิจกรรม</label>
+                                                    <div class="" style="padding-right: 0px;padding-left: 12px;">
                                                         <div>
                                                             <input type="input" value="<?php echo $data[0]['eventimage']; ?>" name="partimage" style="display:none;" enctype='multipart/form-data'>
-                                                            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img style="width: 280px; height: 230px;" src="<?php echo $data[0]['eventimage']; ?>">
+                                                            <div class=""><img style="width: 280px; height: 230px;" src="<?php echo $data[0]['eventimage']; ?>"><br><br>
                                                                 <!-- <input type="file" name="photo" onchange="preview()"> -->
                                                                 <input type="file" class="btn btn-outline-success" style="width:200px;  background: #ffffff;" name="photo" />
                                                             </div><br><br><br>
@@ -425,220 +431,221 @@
 
                                         </div>
                                     </div>
-                                    <div class="col" align="center"><br>
-                                        <button class="btn btn-outline-danger" type="button" data-dismiss="modal">ยกเลิก</button> &nbsp;&nbsp;&nbsp;
-                                        <input class="btn btn-outline-success" type="submit" value="บันทึก"></input><br><br>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script type="text/javascript">
-                    function preview() {
-                        frame.src = URL.createObjectURL(event.target.files[0]);
-                    }
-                </script>
-                <div class="modal fade" id="Add_Register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" align="center">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-
-                                <h5 class="modal-title" id="exampleModalLabel">เข้าร่วมกิจกรรม</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">คุณต้องการลงทะเบียนเข้าร่วมกิจกรรมนี้หรือไม่?</div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal" aria-label="Close">ยกเลิก</button>
-                                <div>
-                                    <!-- <form action="ChackData.php?Status=LoginUser" method="POST"> -->
-                                    <!-- <input type="hidden" id="custId" name="custId" value="3487"> -->
-                                    <!-- <a   onclick="myFunction()" id="codeData" name="codeData" size="100" placeholder="Enter a url or text" style="margin-top:20px"> -->
-                                    <!-- <a class="btn btn-primary" onclick="myFunction()" href="Data_QR.php" >ยืนยัน</a> -->
-                                    <a class="btn btn-primary" href="ChackData.php?Status=QR_Code&Event_ID=<?php echo $data[0]['event_id'] ?>">ยืนยัน</a>
-                                    <!-- <button class="btn btn-secondary" type="button" data-dismiss="modal" aria-label="Close">ยืนยัน</button> -->
-                                    <!-- </form> -->
 
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Page Heading -->
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <!-- <h1 class="h3 mb-0 text-gray-800">Data_Activity</h1>   -->
-                </div>
-                <!-- Divใหญ่หน้าโชว์กิจกรรม -->
-                <div>
-                    <div class="text-center ">
-                        <!-- ชื่อกิจกรรม -->
-
-
-                        <H1><?php
-                            // echo $Event_Data['Event_Name'];
-                            echo $data[0]['eventname'];
-
-                            ?></H1>
-
-                    </div>
-
-                    <div class="card-body">
-                        <!-- card -->
-                        <div class="card mb-3">
-                            <div class="row g-0">
-                                <div class="col-md-4" style="max-width: 50% " relative;>
-
-                                    <img src="<?php echo $data[0]['eventimage']; ?>" width="400" height="300">
-                                    <!-- <button class="btn btn-outline-success" name="submit" type="submit" value="submit">Create</button> -->
-                                    <!-- <img src="Image\IMG_0884.png" class="img-fluid rounded-start" > -->
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h7>วันที่ : <?php echo $data[0]['eventdate']; ?> ถึง <?php echo $data[0]['eventdateend']; ?></h7>
-                                            </div>
-                                            <div class="col">
-                                                <h7>เวลา : <?php echo $data[0]['eventtime']; ?> ถึง <?php echo $data[0]['eventtimeend']; ?> </h7>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <h7>จำนวนคนรับสมัคร <?php echo $data[0]['eventpeople']; ?> คน</h7>
-                                            </div>
-                                            <div class="col">
-                                                <h7>ประเภทกิจกรรม : <?php echo $data[0]['pEventModel']['typename']; ?></h7>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <h7>สถานที่ : <?php echo $data[0]['eventlocation']; ?></h7>
-                                            </div>
-                                            <div class="col">
-                                                <h7>จังหวัด : <?php echo $data[0]['provinceModel']['provincename']; ?></h7>
-                                            </div>
-
-                                        </div>
-                                        <div class="col">
-                                            <h7>รายละเอียด : <?php echo $data[0]['eventparticulars']; ?></h7>
-                                        </div>
-
-
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div>
-                        <!-- โชว์รายละเอียด -->
-
-                    </div>
-
-                    <!-- ความคิดเห็นทั้งหมด -->
-                    <?php $counter = 0;
-                    $i = 0; ?>
-                    <?php
-                    while ($i < count($product)) : ?>
-                        <?php if ($data[0]['event_id'] == $product[$i]['eventid']['event_id']) {
-                            $counter++;
-                        ?>
-                        <?php   } ?>
-                        <?php $i++; ?>
-                    <?php endwhile ?>
-                    <div class="row justify-content-center">
-                        <div class="col-10">
-                            <div class="card bg-light mb-3">
-                                <div class="card-header text-center">ความคิดเห็นทั้งหมด <?php echo $counter; ?> </div>
-                                <div class="card-body">
-
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item" style="padding-left: 30px;">
-                                            <?php
-                                            $i = 0;
-                                            while ($i < count($product)) :
-                                            ?>
-                                                <?php
-                                                if ($data[0]['event_id'] == $product[$i]['eventid']['event_id']) {
-                                                ?>
-                                                    <div class="col">
-                                                        <p style="color:gray;font-size:12px; text-align: right;"> <?php echo $product[$i]['commentdate']; ?></p>
-
-                                                        <div class="row">
-                                                            <img style="border-radius: 50%; " src="<?php echo $product[$i]['userid']['imguser']; ?>" width="45" height="45"><br><br>
-
-                                                            <p class="card-text" style="padding-top: 12px; padding-left: 12px;font-size:14.5px; font-weight: bold;"><?php echo $product[$i]['userid']['name']; ?></p>
-                                                        </div>
-                                                        <br>
-                                                        <div class="row">
-                                                            <p><?php echo $product[$i]['commentdata']; ?></p>
-                                                        </div>
-                                                    </div>
-                                                <?php
-                                                }
-                                                ?>
-                                                <?php $i++ ?>
-                                            <?php endwhile ?>
-                                        </li>
-                                    </ul>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row justify-content-center">
-                        <div class="col-10 text-center">
-                            <form action="ChackData.php?Status=commentevent&eventid=<?php echo $data[0]['event_id']; ?>&userid=<?php echo $data[0]['userid']['user_ID']; ?>" method="POST" enctype="multipart/form-data">
-                                <div class="form-group">
-                                    <!-- <label for="exampleFormControlInput1">Email address</label> -->
-
-                                    <input type="text" name="comment" class="form-control" id="exampleFormControlInput1" required placeholder="แสดงความคิดเห็น"><br>
-                                    <button name="submit" type="submit" class="btn btn-primary btn-block">send</button>
-
+                                <div class="col" align="center"><br>
+                                    <button class="btn btn-outline-danger" type="button" data-dismiss="modal">ยกเลิก</button> &nbsp;&nbsp;&nbsp;
+                                    <input class="btn btn-outline-success" type="submit" value="บันทึก"></input><br><br>
                                 </div>
                             </form>
                         </div>
                     </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                function preview() {
+                    frame.src = URL.createObjectURL(event.target.files[0]);
+                }
+            </script>
+            <div class="modal fade" id="Add_Register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" align="center">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h5 class="modal-title" id="exampleModalLabel">เข้าร่วมกิจกรรม</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">คุณต้องการลงทะเบียนเข้าร่วมกิจกรรมนี้หรือไม่?</div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal" aria-label="Close">ยกเลิก</button>
+                            <div>
+                                <!-- <form action="ChackData.php?Status=LoginUser" method="POST"> -->
+                                <!-- <input type="hidden" id="custId" name="custId" value="3487"> -->
+                                <!-- <a   onclick="myFunction()" id="codeData" name="codeData" size="100" placeholder="Enter a url or text" style="margin-top:20px"> -->
+                                <!-- <a class="btn btn-primary" onclick="myFunction()" href="Data_QR.php" >ยืนยัน</a> -->
+                                <a class="btn btn-primary" href="ChackData.php?Status=QR_Code&Event_ID=<?php echo $data[0]['event_id'] ?>">ยืนยัน</a>
+                                <!-- <button class="btn btn-secondary" type="button" data-dismiss="modal" aria-label="Close">ยืนยัน</button> -->
+                                <!-- </form> -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Page Heading -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <!-- <h1 class="h3 mb-0 text-gray-800">Data_Activity</h1>   -->
+            </div>
+            <!-- Divใหญ่หน้าโชว์กิจกรรม -->
+            <div>
+                <div class="text-center ">
+                    <!-- ชื่อกิจกรรม -->
 
 
+                    <H1><?php
+                        // echo $Event_Data['Event_Name'];
+                        echo $data[0]['eventname'];
 
-                    <!-- <form action="ChackDataProfileUser.php?eventid= --><?php
-                                                                            //  echo $data[0]['event_id'] 
-                                                                            ?>
-                    <!-- &userid= -->
-                    <?php
-                    //  echo $data[0]['userid']['user_ID']  
+                        ?></H1>
+
+                </div>
+
+                <div class="card-body">
+                    <!-- card -->
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4" style="max-width: 50% " relative;>
+
+                                <img src="<?php echo $data[0]['eventimage']; ?>" width="400" height="300">
+                                <!-- <button class="btn btn-outline-success" name="submit" type="submit" value="submit">Create</button> -->
+                                <!-- <img src="Image\IMG_0884.png" class="img-fluid rounded-start" > -->
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="row"><br><br>
+                                        <div class="col">
+                                            <h5>วันที่ : <?php echo $data[0]['eventdate']; ?> ถึง <?php echo $data[0]['eventdateend']; ?></h5>
+                                        </div>
+                                        <div class="col">
+                                            <h5>เวลา : <?php echo $data[0]['eventtime']; ?> ถึง <?php echo $data[0]['eventtimeend']; ?> </h5>
+                                        </div>
+                                    </div>
+                                    <div class="row"><br><br><br>
+                                        <div class="col">
+                                            <h5>จำนวนคนรับสมัคร <?php echo $data[0]['eventpeople']; ?> คน</h5>
+                                        </div>
+                                        <div class="col">
+                                            <h5>ประเภทกิจกรรม : <?php echo $data[0]['pEventModel']['typename']; ?></h5>
+                                        </div>
+                                    </div>
+                                    <div class="row"><br><br><br>
+                                        <div class="col">
+                                            <h5>สถานที่ : <?php echo $data[0]['eventlocation']; ?></h5>
+                                        </div>
+                                        <div class="col">
+                                            <h5>จังหวัด : <?php echo $data[0]['provinceModel']['provincename']; ?></h5>
+                                        </div>
+
+                                    </div>
+                                    <div class="row"><br><br><br>
+                                        <div class="col">
+                                            <h5>รายละเอียด : <?php echo $data[0]['eventparticulars']; ?></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div>
+                    <!-- โชว์รายละเอียด -->
+
+                </div>
+
+                <!-- ความคิดเห็นทั้งหมด -->
+                <?php $counter = 0;
+                $i = 0; ?>
+                <?php
+                while ($i < count($product)) : ?>
+                    <?php if ($data[0]['event_id'] == $product[$i]['eventid']['event_id']) {
+                        $counter++;
                     ?>
-                    <!-- &page= -->
-                    <?php
-                    //   echo $indexEvent 
-                    ?>
-                    <!-- "method="POST" enctype="multipart/form-data"> -->
+                    <?php   } ?>
+                    <?php $i++; ?>
+                <?php endwhile ?>
+                <div class="row justify-content-center">
+                    <div class="col-10">
+                        <div class="card bg-light mb-3">
+                            <div class="card-header text-center">ความคิดเห็นทั้งหมด <?php echo $counter; ?> </div>
+                            <div class="card-body">
 
-                    <!-- <div class="row justify-content-center">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item" style="padding-left: 30px;">
+                                        <?php
+                                        $i = 0;
+                                        while ($i < count($product)) :
+                                        ?>
+                                            <?php
+                                            if ($data[0]['event_id'] == $product[$i]['eventid']['event_id']) {
+                                            ?>
+                                                <div class="col">
+                                                    <p style="color:gray;font-size:12px; text-align: right;"> <?php echo $product[$i]['commentdate']; ?></p>
+
+                                                    <div class="row">
+                                                        <img style="border-radius: 50%; " src="<?php echo $product[$i]['userid']['imguser']; ?>" width="45" height="45"><br><br>
+
+                                                        <p class="card-text" style="padding-top: 12px; padding-left: 12px;font-size:14.5px; font-weight: bold;"><?php echo $product[$i]['userid']['name']; ?></p>
+                                                    </div>
+                                                    <br>
+                                                    <div class="row">
+                                                        <p><?php echo $product[$i]['commentdata']; ?></p>
+                                                    </div>
+                                                </div>
+                                            <?php
+                                            }
+                                            ?>
+                                            <?php $i++ ?>
+                                        <?php endwhile ?>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-10 text-center">
+                        <form action="ChackData.php?Status=commentevent&eventid=<?php echo $data[0]['event_id']; ?>&userid=<?php echo $data[0]['userid']['user_ID']; ?>" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <!-- <label for="exampleFormControlInput1">Email address</label> -->
+
+                                <input type="text" name="comment" class="form-control" id="exampleFormControlInput1" required placeholder="แสดงความคิดเห็น"><br>
+                                <button name="submit" type="submit" class="btn btn-primary btn-block">send</button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+
+                <!-- <form action="ChackDataProfileUser.php?eventid= --><?php
+                                                                        //  echo $data[0]['event_id'] 
+                                                                        ?>
+                <!-- &userid= -->
+                <?php
+                //  echo $data[0]['userid']['user_ID']  
+                ?>
+                <!-- &page= -->
+                <?php
+                //   echo $indexEvent 
+                ?>
+                <!-- "method="POST" enctype="multipart/form-data"> -->
+
+                <!-- <div class="row justify-content-center">
                             <div class="col-10 text-center">
                                 <div class="form-group"> -->
-                    <!-- <label for="exampleFormControlInput1">Email address</label> -->
-                    <!-- <input type="text" name="comment" class="form-control" id="exampleFormControlInput1" placeholder="แสดงความคิดเห็น"><br>
+                <!-- <label for="exampleFormControlInput1">Email address</label> -->
+                <!-- <input type="text" name="comment" class="form-control" id="exampleFormControlInput1" placeholder="แสดงความคิดเห็น"><br>
                                     <button name="submit" type="submit"  class="btn btn-primary btn-block">send</button>
                                 </div>
                             </div>
                         </div>
                     </form> -->
 
-                </div>
-
             </div>
 
-
-
         </div>
-        <!-- End of Main Content -->
+
+
+
+    </div>
+    <!-- End of Main Content -->
 
     </div>
     <!-- End of Content Wrapper -->
@@ -714,7 +721,8 @@
     <script src="js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script type="text/javascript" src="instascan.min.js"></script>
+    <!-- <script type="text/javascript" src="instascan.min.js"></script> -->
+    <script type="text/javascript" src="js\camera.js"></script>
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-158605510-1"></script>
     <script>
         let scanner = new Instascan.Scanner({
@@ -735,14 +743,15 @@
             document.getElementById('text').value = c;
         });
     </script>
-    <!-- <script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() {
+            dataLayer.push(arguments);
+        }
         gtag('js', new Date());
         gtag('config', 'UA-158605510-1');
-    
-    </script> -->
+    </script>
 
 
 </body>

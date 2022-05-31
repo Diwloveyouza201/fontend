@@ -18,8 +18,14 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link href="css/colorprofile.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
     <?php
     require_once './dbconnect.php';
+    // session_start();
+    if (!isset($_SESSION['chacklogin']) && empty($_SESSION['chacklogin'])) {
+        Header("Location:Login.php");
+    }
     ?>
 </head>
 
@@ -36,10 +42,10 @@
     // $user = $_SESSION['Login_User_ID'];
     $conn->getProvince();
     $Province = $_SESSION['Province'];
-
     $conn->getP_Event();
     $PEvent = $_SESSION['P_Event'];
     ?>
+
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -187,39 +193,43 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+
+                    <!-- <form action="ChackData.php?Status=search" method="POST"  class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                            <input type="text"  name="datasearch" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
+                                <button class="btn btn-primary">
+                                
                                     <i class="fas fa-search fa-sm"></i>
+                                    <input class="btn btn-outline-success" type="submit" value="บันทึก">
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
+                    <!-- <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
+                        <!-- <li class="nav-item dropdown no-arrow d-sm-none">
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
+                            </a> -->
+                        <!-- Dropdown - Messages -->
+                        <!-- <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                                <form action="ChackData.php?Status=search"  class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
                                         <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                                         <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
+                                            <button class="btn btn-primary" type="submit">
                                                 <i class="fas fa-search fa-sm"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </form>
-                            </div>
-                        </li>
+                            </div> -->
+                        <!-- </li> -->
 
                         <!-- <div class="topbar-divider d-none d-sm-block"></div> -->
 
@@ -369,10 +379,46 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.container-fluid -->
+                <?php
+                $i = 0;
+                $ii = 0;
+                while ($i < count($product)) : ?>
+                    <?php if ($product[$i]['eventdelet'] == 1 && $product[$i]['eventstatus'] == 1) {
+                        $ii++;
+                    }  ?>
+                    <?php $i++ ?>
+                <?php endwhile ?>
+
+                <div class="modal fade" id="ShowEx" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style=" left: 180px;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="text-center" id="exampleModalLabel">ตัวอย่างการค้นหา</h4>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="col-md-12 ">
+                                <div class="text-details-event"></i>
+                                    <br>
+                                    <h5>ค้นหาชื่อกิจกรรม เช่น งานกิจกรรมทดสอบ</h5><br>
+                                    <h5>ค้นหาวันที่ เช่น 01-02-2022</h5><br>
+                                    <h5>ค้นหาเวลา เช่น 09:00</h5>
+                                </div>
+                            </div>
+                            <div class="col" align="center"><br>
+                                <input class="btn btn-outline-success" type="button" value="เข้าใจแล้ว" data-dismiss="modal"></input><br><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="container-fluid">
-                    <div class="row">
+                    <div class="input-group">
+                        <input class="login-form" type="text" id="TextInput" onkeyup="myFunction(<?php echo $ii ?>)" placeholder="ค้นหา" title="Type in a name">
+                        <a href="#" data-toggle="modal" data-target="#ShowEx" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">ตัวอย่างการค้นหา</a>
+                    </div><br>
+                    <div id="g" class="row">
                         <?php
                         $i = 0;
                         while ($i < count($product)) : ?>
@@ -380,23 +426,25 @@
 
                                 <div class="col-xl-4 col-lg-5">
                                     <div class="card shadow mb-4">
-                                        <!-- <img src="Image\IMG_0884.png" alt="Avatar"  >   -->
+
                                         <div class="card shadow mb-4">
                                             <img src="<?php echo $product[$i]['eventimage']; ?>" style=" width: auto; height:  300px; display: block; top: 2px;left: 2px;" alt="Avatar">
                                         </div>
 
                                         <div class="card-body">
                                             <h3 class="card-title"><?php echo $product[$i]['eventname']; ?></h3>
-                                            <h6 class="card-title"><?php echo "จำนวน " . $product[$i]['eventpeople'] . " คน"; ?></h5>
-                                                <p class="card-text">
-                                                    <?php echo $product[$i]['eventparticulars']; ?>
-                                                </p>
-                                                <form action="ChackData.php?Status=chackuser&eventid=<?php echo $product[$i]['event_id']; ?>" method="POST" style="padding-top: 0px;" enctype="multipart/form-data">
-                                                    <div align="right">
-                                                        <!-- <s class="btn btn-outline-primary" href="#">รายละเอียดเพิ่มเติม</s> -->
-                                                        <input class="btn btn-outline-success" type="submit" value="รายละเอียดเพิ่มเติม"></input>
-                                                    </div>
-                                                </form>
+                                            <h6 class="card-title">วันที่จัดกิจกรรม:<?php echo  $product[$i]['eventdate']; ?></h6>
+                                            <h6 class="card-title">เวลาที่จัดกิจกรรม:<?php echo $product[$i]['eventtime']; ?></h6>
+
+                                            <p class="card-text">
+                                                <?php echo $product[$i]['eventparticulars']; ?>
+                                            </p>
+                                            <form action="ChackData.php?Status=chackuser&eventid=<?php echo $product[$i]['event_id']; ?>" method="POST" style="padding-top: 0px;" enctype="multipart/form-data">
+                                                <div align="right">
+
+                                                    <input class="btn btn-outline-success" type="submit" value="รายละเอียดเพิ่มเติม"></input>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -406,6 +454,7 @@
                         <?php endwhile ?>
                     </div>
                 </div>
+
                 <!-- End of Main Content -->
 
             </div>
@@ -421,22 +470,22 @@
 
         <!-- Logout Modal-->
         <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">ออกจากระบบ</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">คุณต้องการออกจากระบบนี้หรือไม่</div>
-                            <div class="modal-footer">
-                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">ยกเลิก</button>
-                                <a class="btn btn-outline-success" href="Login.php">ยืนยัน</a>
-                            </div>
-                        </div>
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">ออกจากระบบ</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">คุณต้องการออกจากระบบนี้หรือไม่</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" type="button" data-dismiss="modal">ยกเลิก</button>
+                        <a class="btn btn-outline-success" href="logout.php">ยืนยัน</a>
                     </div>
                 </div>
+            </div>
+        </div>
 
         <!-- Bootstrap core JavaScript-->
         <script src="vendor/jquery/jquery.min.js"></script>
@@ -453,6 +502,25 @@
         <script type="text/javascript">
             function preview() {
                 frame.src = URL.createObjectURL(event.target.files[0]);
+            }
+        </script>
+        <script>
+            function myFunction(a) {
+                input = document.getElementById("TextInput").value;
+                for (i = 1; i <= a; i++) {
+                    aa = document.querySelector("#g > div:nth-child(" + "" + i + "" + ") > div > div.card-body > h3")
+                    aaa = document.querySelector("#g > div:nth-child(" + "" + i + "" + ") > div > div.card-body > h6:nth-child(3)")
+                    aaaa = document.querySelector("#g > div:nth-child(1) > div > div.card-body > h6:nth-child(2)")
+                    txtValue = aa.textContent || aa.innerText;
+                    txtValuee = aaa.textContent || aaa.innerText;
+                    txtValueee = aaaa.textContent || aaaa.innerText;
+                    if (txtValue.indexOf(input) > -1 || txtValuee.indexOf(input) > -1 || txtValueee.indexOf(input) > -1) {
+                        //document.querySelector("#g > div:nth-child(1)")
+                        document.querySelector("#g > div:nth-child(" + "" + i + "" + ")").style.display = "";
+                    } else {
+                        document.querySelector("#g > div:nth-child(" + "" + i + "" + ")").style.display = "none";
+                    }
+                }
             }
         </script>
 

@@ -20,6 +20,9 @@
     <link href="css/colorprofile.css" rel="stylesheet">
     <?php
     require_once './dbconnect.php';
+    if(!isset($_SESSION['chacklogin']) && empty($_SESSION['chacklogin'])) {
+        Header("Location:Login.php");
+    }
     ?>
 </head>
 
@@ -311,7 +314,7 @@
                                             <div>
                                                 <input style="display:none;" type="input" value="<?php echo $get["imguser"]; ?>" name="partimage" enctype='multipart/form-data'>
                                             </div>
-                                            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" style="width: 115px;" src="<?php echo $get["imguser"]; ?>" onchange="preview()"  width="90">
+                                            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" style="width: 115px;" src="<?php echo $get["imguser"]; ?>" onchange="preview()" width="90">
                                                 <h10><?php echo $get["name"]; ?><br><br>
                                                     <!-- <input type="file" name="photo" onchange="preview()"> -->
                                                     <input type="file" class="btn btn-outline-success" style="width:200px;  background: #ffffff;" name="photo" />
@@ -324,10 +327,7 @@
                                                     <div class="d-flex flex-row align-items-center back"><i class="fa fa-long-arrow-left mr-1 mb-1"></i>
                                                         <h10>กรุณาตรวจสอบข้อมูลก่อนทำการแก้ไขให้เรียบร้อย</h10>
                                                     </div>
-
                                                 </div>
-
-
 
                                                 <div class="modal-body">
                                                     <div class="row mt-2">
@@ -346,9 +346,13 @@
 
                                                     <div class="gender"> <br>
                                                         <label class="gender" for="">เพศ </label><br>
-                                                        <input type="radio" id="html" name="Gender" <?php if($get["gender"]=="G01"){ echo "checked";} ?> value="G01">
+                                                        <input type="radio" id="html" name="Gender" <?php if ($get["gender"] == "G01") {
+                                                                                                        echo "checked";
+                                                                                                    } ?> value="G01">
                                                         <label class="gender" for="html">ชาย</label>
-                                                        <input type="radio" style="margin-left: 19px;" id="html" name="Gender"<?php if($get["gender"]=="G02"){ echo "checked";} ?>  value="G02">
+                                                        <input type="radio" style="margin-left: 19px;" id="html" name="Gender" <?php if ($get["gender"] == "G02") {
+                                                                                                                                    echo "checked";
+                                                                                                                                } ?> value="G02">
                                                         <label for="html">หญิง</label>
                                                     </div>
                                                     <div class="col" align="center">
@@ -376,60 +380,67 @@
                         <div class="card mb-3">
                             <div class="row g-0">
                                 <div class="col-md-4" style="max-width: 50% position relative;">
-
-                                    <img src="<?php echo $get['imguser']; ?> " class="img-fluid rounded-start" width="200" height="300">
-
+                                    <img src="<?php echo $get['imguser']; ?> " class="img-fluid rounded-start" width="250" height="auto">
                                 </div>
 
                                 <div class="col-md-8">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col" align="left">
-                                                <H5>ชื่อ : <?php echo $get["name"]; ?><h5></h5>
-                                                    </H4>
-                                            </div>
-                                            <div class="col" align="left">
-                                                <H5>ชื่อเล่น : <?php echo $get["nickname"]; ?><h5></h5>
-                                                    </H4>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col" align="left">
-                                                <H5>อีเมล : <?php echo $get["email"]; ?><h5></h5>
-                                                
-                                                </H5>
-                                            </div>
-                                            <div class="col" align="left">
-                                                <H5>อายุ : <?php echo $get["age"]; ?><br>
-                                                    <h5><br> เพศ : <?php
-                                                                    if ($get["gender"] == "G01") {
-                                                                        echo "ชาย";
-                                                                    } else {
-                                                                        echo "หญิง";
-                                                                    } ?><br>
+                                                <H6>ชื่อ : <?php echo $get["name"]; ?></H6>
 
-                                                    </h5>
-                                                </H5>
                                             </div>
-                                        </div>
+                                            <div class="col" align="left">
+                                                <h6>ชื่อเล่น : <?php echo $get["nickname"]; ?></h6>
+
+                                            </div>
+                                        </div><br>
                                         <div class="row">
                                             <div class="col" align="left">
-                                                <H5>เบอร์โทร : <?php echo $get["phone"]; ?> <br> </H5>
+                                                <h6>อีเมล : <?php echo $get["email"]; ?></h6>
                                             </div>
                                             <div class="col" align="left">
-                                                <H5>Line : <?php echo $get["lineid"]; ?> <br> </H5>
+                                                <H6>อายุ : <?php echo $get["age"]; ?>
+
+                                                </H6>
                                             </div>
+                                        </div><br>
+                                        <div class="row">
+                                            <div class="col" align="left">
+                                                <H6>เบอร์โทร : <?php echo $get["phone"]; ?> </H6>
+                                            </div>
+                                            <div class="col" align="left">
+                                                <H6>Line : <?php echo $get["lineid"]; ?></H6>
+                                            </div>
+                                        </div><br>
+                                        <div class="row">
+                                            <div class="col" align="left">
+                                                <h6>เพศ : <?php
+                                                                if ($get["gender"] == "G01") {
+                                                                    echo "ชาย";
+                                                                } else {
+                                                                    echo "หญิง";
+                                                                } ?>
+
+                                                </h6>
+                                            </div>
+
                                         </div>
+
+
+
+
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body text-center">
-                            <div class="card">
+                        <div class="card mb-3">
+                            <div>
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
-                                            <tr>
+                                            <tr class="bg-gradient-primary text-white-50"  >
                                                 <th>No.</th>
                                                 <th>ชื่อกิจกรรม</th>
                                                 <th>วันที่และเวลา</th>
@@ -439,7 +450,7 @@
                                             </tr>
                                         </thead>
                                         <tfoot>
-                                            <tr>
+                                            <tr class="bg-gradient-primary  text-white-50">
                                                 <th>No.</th>
                                                 <th>ชื่อกิจกรรม</th>
                                                 <th>วันที่และเวลา</th>
@@ -468,17 +479,16 @@
 
                                         while ($i < count($qrCode)) : ?>
                                             <?php if ($qrCode[$i]['userid']['user_ID'] == $get['user_ID']) { ?>
-
+                                                <?php $n++; ?>
                                                 <tbody>
                                                     <tr>
-                                                        <td></td>
-                                                        <td><?php echo $qrCode[$i]['eventid']['eventname']; ?><?php echo $i; ?></td>
-                                                        <td>วันที่:<?php echo $qrCode[$i]['eventid']['eventdate']; ?> เวลา:<?php echo $i; ?><?php echo $qrCode[$i]['eventid']['eventtime']; ?></td>
-                                                        
-                                                        <td> <a href="data_Activity2.php?event=<?php echo $i ?>"></i>ไปหน้ากิจกรรม</a> </td>
-                                                        <td> <a href="crad.php?event=<?php echo $i ?>"></i>บัตรเข้าร่วมกิจกรรม</a></td>
+                                                        <td><?php echo $n; ?></td>
+                                                        <td><?php echo $qrCode[$i]['eventid']['eventname']; ?></td>
+                                                        <td>วันที่:<?php echo $qrCode[$i]['eventid']['eventdate']; ?> เวลา:<?php echo $qrCode[$i]['eventid']['eventtime']; ?></td>
+                                                        <td> <a href="ChackData.php?Status=chackuser&eventid=<?php echo $qrCode[$i]['eventid']['event_id'] ?>"></i>ไปหน้ากิจกรรม</a> </td>
+                                                        <td> <a href="crad.php?idqrcode=<?php echo $qrCode[$i]['qrcode_ID']; ?>"></i>บัตรเข้าร่วมกิจกรรม</a></td>
+
                                                     </tr>
-                                                    
                                                 </tbody>
                                             <?php } ?>
                                             <?php $i++ ?>
@@ -545,12 +555,12 @@
                         reader.readAsDataURL(file);
                     }
                 </script>
-<script src="js/newLogin.js"></script>
-<script type="text/javascript">
-   function preview() {
-      frame.src = URL.createObjectURL(event.target.files[0]);
-   }
-</script>
+                <script src="js/newLogin.js"></script>
+                <script type="text/javascript">
+                    function preview() {
+                        frame.src = URL.createObjectURL(event.target.files[0]);
+                    }
+                </script>
 </body>
 
 </html>
